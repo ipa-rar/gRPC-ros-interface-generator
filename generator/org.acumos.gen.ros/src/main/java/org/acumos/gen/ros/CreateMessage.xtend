@@ -12,11 +12,9 @@
  package org.acumos.gen.ros
 
 import com.google.protobuf.DescriptorProtos.DescriptorProto
-import com.google.protobuf.Descriptors.FieldDescriptor
-import java.util.List
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto
-import java.util.ArrayList
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto
+
+import static org.acumos.gen.ros.TrafoUtils.*
 
 class CreateMessage {
 	/**
@@ -44,20 +42,4 @@ class CreateMessage {
 			«method.outputType.substring(1)» reply
 		«ENDFOR»
 	'''
-		
-	/**
-	 * Return a set of field descriptor protos
-	 */
-	static def getFields(DescriptorProto msgType, FieldDescriptor fieldKey) {
-		val fieldList = new ArrayList<FieldDescriptorProto>()
-		var fields = msgType.allFields.get(fieldKey)
-		if (fields instanceof List) {
-			for (field : fields) {
-				if (field instanceof FieldDescriptorProto) {
-					fieldList.add(field)
-				}
-			}
-		}
-		return fieldList;
-	}
 }

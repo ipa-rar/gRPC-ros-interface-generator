@@ -28,7 +28,6 @@ import com.google.protobuf.InvalidProtocolBufferException;
  * Parse a proto descriptor set
  */
 public class ParseProto {
-	private static final String DS_FILE = "/local/home/ansgar/git/ai4eu/test/demo.ds"; //$NON-NLS-1$
 
 	/**
 	 * Return a proto file descriptor from a compiled file (descriptor set)
@@ -59,7 +58,11 @@ public class ParseProto {
 
 	public static void main(String args[]) {
 		try {
-			FileDescriptorProto proto = getDescriptor(args.length > 0 ? args[0] : DS_FILE);
+			if (args.length == 0) {
+				System.err.println("usage: ParseProto <path to descriptor set file>");
+				return;
+			}
+			FileDescriptorProto proto = getDescriptor(args[0]);
 			for (DescriptorProto msgType : proto.getMessageTypeList()) {
 				System.err.println();
 				System.err.println(CreateMessage.createMessage(msgType));
@@ -75,6 +78,15 @@ public class ParseProto {
 			System.err.println("package.xml:"); //$NON-NLS-1$
 			System.err.println(CreateBuildFiles.createPackageXML(proto));
 	
+			System.err.println();
+			System.err.println("client.py:"); //$NON-NLS-1$
+			for (ServiceDescriptorProto svcType : proto.getServiceList()) {
+				var pyStub = new CreatePyStub(proto, svcType);
+				for (var method : svcType.getMethodList()) {
+					System.err.println(pyStub.createStub(method));
+				}
+			}
+
 		} catch (InvalidProtocolBufferException | DescriptorValidationException | FileNotFoundException e) {
 			e.printStackTrace();
 		}

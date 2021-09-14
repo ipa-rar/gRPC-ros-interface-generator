@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+	http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<!-- PROJECT DESCRIPTION -->
+	<groupId>org.acumos.gen</groupId>
+	<artifactId>gen-parent</artifactId>
+	<version>0.7.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>ROS generator</name>
+	<description>ROS2 generator from proto descriptor</description>
+		
+	<!-- MODULES -->	
+	<modules>
+		<module>org.acumos.gen.ros</module>
+	</modules>
+	 
+	<!-- REPOSITORIES -->
+	<repositories> 
+		<repository>
+			<id>eclipse-2021-03</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/releases/2021-03</url>
+		</repository>
+	</repositories>
+	
+	<pluginRepositories>
+		<pluginRepository>
+			<id>eclipse-maven-releases</id>
+			<url>https://repo.eclipse.org/content/repositories/releases/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+		<!-- https://repo.maven.apache.org/maven2/ is being fetched by default -->
+	</pluginRepositories>
+
+	<!-- PROPERTIES -->
+	<properties>
+		<!-- Product version displayed in the title bar, etc. -->
+		<product.version>0.7.0</product.version>
+		
+		<!-- Tycho plugin version -->
+		<tycho-version>2.2.0</tycho-version>
+	
+		<!-- eclipse-jarsigner plugin version -->
+		<jarsigner-version>1.3.2</jarsigner-version>
+			
+		<!-- Enforce used of UTF encoding is mandatory. Otherwise, default platform encoding is used, and some issues appears with differents os constructions -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
+		<!-- Sonar properties -->
+		<sonar.exclusions>**/src-gen/**/*</sonar.exclusions>
+		<sonar.language>java</sonar.language>
+
+		<java.source>11</java.source>
+		<java.target>11</java.target>
+
+		<xtend.version>2.25.0</xtend.version>
+	</properties>
+
+	<!-- BUILD DEFINITION -->
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.8.0</version>
+					<configuration>
+						<source>${java.source}</source>
+						<target>${java.target}</target>
+						<optimize>true</optimize>
+						<showWarnings>true</showWarnings>
+					</configuration>
+				</plugin>
+
+				<plugin>
+				  <groupId>org.apache.maven.plugins</groupId>
+				  <artifactId>maven-jar-plugin</artifactId>
+				  <configuration>
+					<archive>
+					  <manifest>
+						<addClasspath>true</addClasspath>
+						<classpathPrefix>${project.build.finalName}.lib/</classpathPrefix>
+						<mainClass>${fully.qualified.main.class}</mainClass>
+					  </manifest>
+					</archive>
+				  </configuration>
+				</plugin>
+
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>

@@ -11,7 +11,13 @@
 
 package org.acumos.gen.ros;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 
 /**
  * Utility functions for creating ROS from a .proto file
@@ -55,5 +61,30 @@ public class TrafoUtils {
 			return name.substring(0, name.length() - PROTO_EXT.length());
 		}
 		return name;
+	}
+	
+	/**
+	 * Return a set of field descriptor protos
+	 */
+	static List<FieldDescriptorProto> getFields(DescriptorProto msgType, FieldDescriptor fieldKey) {
+		final var fieldList = new ArrayList<FieldDescriptorProto>();
+		final var fields = msgType.getAllFields().get(fieldKey);
+		if (fields instanceof List) {
+			for (var field : (List<?>) fields) {
+				if (field instanceof FieldDescriptorProto) {
+					fieldList.add((FieldDescriptorProto) field);
+				}
+			}
+		}
+		return fieldList;
+	}
+	
+	static DescriptorProto getTypeFromName(FileDescriptorProto proto, String name) {
+		for (DescriptorProto msgType : proto.getMessageTypeList()) {
+			if (name.endsWith(msgType.getName())) {
+				return msgType;
+			}
+		}
+		return null;
 	}
 }
