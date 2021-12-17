@@ -9,12 +9,15 @@
  * 
  *****************************************************************************/
  
- package org.acumos.gen.ros
+package org.acumos.gen.ros.ros2
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto
 
 import static extension org.acumos.gen.ros.TrafoUtils.*
 
+/**
+ * Create build files for ROS2, i.e. CMakeLists.txt and package.xml
+ */
 class CreateBuildFiles {
 	/**
 	 * Create contents for a proto message type

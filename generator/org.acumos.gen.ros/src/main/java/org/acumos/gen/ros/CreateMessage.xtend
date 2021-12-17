@@ -16,6 +16,9 @@ import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto
 
 import static org.acumos.gen.ros.TrafoUtils.*
 
+/**
+ * Message creation for ROS1 or ROS2
+ */
 class CreateMessage {
 	/**
 	 * Create contents for a proto message type

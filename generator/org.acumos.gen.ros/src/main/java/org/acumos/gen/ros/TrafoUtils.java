@@ -17,6 +17,7 @@ import java.util.List;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 
 /**
@@ -62,11 +63,11 @@ public class TrafoUtils {
 		}
 		return name;
 	}
-	
+
 	/**
 	 * Return a set of field descriptor protos
 	 */
-	static List<FieldDescriptorProto> getFields(DescriptorProto msgType, FieldDescriptor fieldKey) {
+	public static List<FieldDescriptorProto> getFields(DescriptorProto msgType, FieldDescriptor fieldKey) {
 		final var fieldList = new ArrayList<FieldDescriptorProto>();
 		final var fields = msgType.getAllFields().get(fieldKey);
 		if (fields instanceof List) {
@@ -78,13 +79,35 @@ public class TrafoUtils {
 		}
 		return fieldList;
 	}
-	
-	static DescriptorProto getTypeFromName(FileDescriptorProto proto, String name) {
+
+	public static DescriptorProto getTypeFromName(FileDescriptorProto proto, String name) {
 		for (DescriptorProto msgType : proto.getMessageTypeList()) {
 			if (name.endsWith(msgType.getName())) {
 				return msgType;
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * @param proto
+	 *            a protobuf descriptor
+	 * @return a flattened list of field descriptor protos
+	 */
+	public static List<FieldDescriptorProto> getFlatFields(DescriptorProto proto) {
+		List<FieldDescriptorProto> list = new ArrayList<FieldDescriptorProto>();
+		for (Descriptors.FieldDescriptor fieldKey : proto.getAllFields().keySet()) {
+			list.addAll(getFields(proto, fieldKey));
+		}
+		return list;
+	}
+
+	/**
+	 * @param proto
+	 *            a protobuf descriptor
+	 * @return the number of filed in a protobuf type
+	 */
+	public static int getNumberOfFields(DescriptorProto proto) {
+		return getFlatFields(proto).size();
 	}
 }

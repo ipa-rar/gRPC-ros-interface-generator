@@ -16,10 +16,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import org.acumos.gen.ros.ros1.CreateROS1Files;
+import org.acumos.gen.ros.ros2.CreateROS2Files;
+
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
-import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.DescriptorValidationException;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -28,6 +29,9 @@ import com.google.protobuf.InvalidProtocolBufferException;
  * Parse a proto descriptor set
  */
 public class ParseProto {
+
+	private static final String ROS1 = "ros1"; //$NON-NLS-1$
+	private static final String ROS2 = "ros2"; //$NON-NLS-1$
 
 	/**
 	 * Return a proto file descriptor from a compiled file (descriptor set)
@@ -56,37 +60,29 @@ public class ParseProto {
 		return proto;
 	}
 
+	protected static void printUsage() {
+		System.err.println(String.format("usage: ParseProto %s|%s <path to descriptor set file>", ROS1, ROS2)); //$NON-NLS-1$
+	}
+
 	public static void main(String args[]) {
 		try {
-			if (args.length == 0) {
-				System.err.println("usage: ParseProto <path to descriptor set file>");
+			if (args.length < 2) {
+				printUsage();
 				return;
 			}
-			FileDescriptorProto proto = getDescriptor(args[0]);
-			for (DescriptorProto msgType : proto.getMessageTypeList()) {
-				System.err.println();
-				System.err.println(CreateMessage.createMessage(msgType));
+			String rosVersion = args[0];
+			if (!rosVersion.equals(ROS1) && !rosVersion.equals(ROS2)) {
+				printUsage();
+				return;
 			}
-			for (ServiceDescriptorProto svcType : proto.getServiceList()) {
-				// System.err.println(CreateMessage.createService(svcType));
+			FileDescriptorProto proto = getDescriptor(args[1]);
+			FileWriter fw = new FileWriter(TrafoUtils.stripExt(proto.getName())); 
+			if (rosVersion.equals(ROS1)) {
+				CreateROS1Files.createFiles(fw, proto);
 			}
-			System.err.println();
-			System.err.println("CMakeLists.txt:"); //$NON-NLS-1$
-			System.err.println(CreateBuildFiles.createCMakeLists(proto));
-
-			System.err.println();
-			System.err.println("package.xml:"); //$NON-NLS-1$
-			System.err.println(CreateBuildFiles.createPackageXML(proto));
-	
-			System.err.println();
-			System.err.println("client.py:"); //$NON-NLS-1$
-			for (ServiceDescriptorProto svcType : proto.getServiceList()) {
-				var pyStub = new CreatePyStub(proto, svcType);
-				for (var method : svcType.getMethodList()) {
-					System.err.println(pyStub.createStub(method));
-				}
+			else {
+				CreateROS2Files.createFiles(fw, proto);
 			}
-
 		} catch (InvalidProtocolBufferException | DescriptorValidationException | FileNotFoundException e) {
 			e.printStackTrace();
 		}

@@ -16,6 +16,6 @@ In docker, the interface generator is build with maven.
 The generator can be manually started with
 
 	$ java -jar org.acumos.gen.ros/target/org.acumos.gen.ros-0.7.0-SNAPSHOT-jar-with-dependencies.jar
-		<location of a pre-compiled proto descriptor file> 
+		ros1|ros2 <location of a pre-compiled proto descriptor file> 
 
 The manual invocation is used for testing purposes and will be replaced by an integration of the service in a chain.
