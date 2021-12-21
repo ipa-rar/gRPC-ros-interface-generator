@@ -1,4 +1,4 @@
-# ROS2 interface generator
+# ROS & ROS2 interface generator
 
 ## Build
 
