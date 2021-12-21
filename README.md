@@ -1,7 +1,11 @@
 # gRPC-ros-interface-generator
 
 ## Protoc descriptor file generation
-`protoc --descriptor_set_out=protoc/demo.proto protobufs/demo.proto`
-## Docker build the generator
+Repeat this process for every new proto file added to the protobufs directory
+- `protoc --descriptor_set_out=protoc/_filename_.ds protobufs/_filename_.proto`
 
-`docker build -t grpc_generator -f docker/Dockerfile ./`
+## Docker run the generator
+
+1. `docker build -t grpc_generator -f docker/Dockerfile ./`
+
+2. `docker run grpc_generator:latest`
