@@ -22,7 +22,7 @@ public class CreateROS2Files {
 	@SuppressWarnings("nls")
 	public static void createFiles(FileWriter fw, FileDescriptorProto proto) {
 		for (DescriptorProto msgType : proto.getMessageTypeList()) {
-			fw.generateFile(String.format("%s.msg", msgType.getName()), CreateMessage.createMessage(msgType));
+			fw.generateFile(String.format("msg/%s.msg", msgType.getName()), CreateMessage.createMessage(msgType));
 		}
 		for (ServiceDescriptorProto svcType : proto.getServiceList()) {
 			// System.err.println(CreateMessage.createService(svcType));

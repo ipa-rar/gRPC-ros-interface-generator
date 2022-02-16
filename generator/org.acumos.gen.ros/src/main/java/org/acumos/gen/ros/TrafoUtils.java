@@ -11,6 +11,7 @@
 
 package org.acumos.gen.ros;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,14 +53,18 @@ public class TrafoUtils {
 	}
 
 	/**
-	 * Remove .proto extension from a proto file name
+	 * Remove .proto extension from a proto file name and also handle leading folder names
 	 * 
 	 * @param name
 	 * @return the stripped name if the extension was found, the original name otherwise.
 	 */
 	public static String stripExt(String name) {
 		if (name.endsWith(PROTO_EXT)) {
-			return name.substring(0, name.length() - PROTO_EXT.length());
+			name = name.substring(0, name.length() - PROTO_EXT.length());
+		}
+		int index = name.lastIndexOf(File.separatorChar);
+		if (index != -1) {
+			name = name.substring(index + 1);
 		}
 		return name;
 	}
